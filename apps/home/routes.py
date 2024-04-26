@@ -80,8 +80,11 @@ def attend(unique_link):
         matricula = request.form['matricula']
         email = request.form['email']  # Assuming you want to capture the email
         secret = request.form['secret']
+        tipo = request.form['tipo']
+        if tipo is None or tipo == '':
+            tipo = 1
         if secret == course.secret_code:
-            attendance = Attendance(course_code=course.course_code, course_class=course.course_class, emp=1, matricula=matricula, email=email)
+            attendance = Attendance(course_code=course.course_code, course_class=course.course_class, emp=tipo, matricula=matricula, email=email)
             db.session.add(attendance)
             db.session.commit()
             messages['success'] = 'Registro feito com sucesso!'
@@ -186,7 +189,7 @@ def export_attendance_csv_all():
                 "02",
                 attendance.course_code,
                 attendance.course_class,
-                "1",  # EMP é sempre 1
+                attendance.emp,
                 attendance.matricula,
                 attendance.date.strftime('%d/%m/%Y')  # Formata a data
             ])
@@ -217,7 +220,7 @@ def export_attendance_csv(course_code, course_class):
                 "02",
                 attendance.course_code,
                 attendance.course_class,
-                "1",  # EMP is always 1
+                attendance.emp,
                 attendance.matricula,
                 attendance.date.strftime('%d/%m/%Y')  # Format the date
             ])
