@@ -80,7 +80,7 @@ def attend(unique_link):
         matricula = request.form['matricula']
         email = request.form['email']  # Assuming you want to capture the email
         secret = request.form['secret']
-        tipo = request.form['tipo']
+        tipo = request.form['funcampSelect']
         if tipo is None or tipo == '':
             tipo = 1
         if secret == course.secret_code:

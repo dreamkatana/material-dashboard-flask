@@ -48,10 +48,15 @@
                 <label for="matricula" class="form-label">Matricula:</label>
                 <input type="number" class="form-control" id="matricula" name="matricula" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
               </div>
-              <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="funcampCheckbox">
-                <label class="form-check-label" for="funcampCheckbox">Funcamp</label>
+              <div class="mb-3">
+                <label for="funcampSelect" class="form-label">Tipo:</label>
+                <select class="form-select" id="funcampSelect" name="funcampSelect">
+                  <option value="1">Unicamp</option>
+                  <option value="1">Funcamp</option>
+                  <option value="2">Alunos ou Externos</option>
+                </select>
               </div>
+              
               <div class="mb-3">
                 <label for="secret" class="form-label">Código de acesso:</label>
                 <input type="text" class="form-control" id="secret" name="secret" required>
@@ -82,18 +87,23 @@
 <!-- Specific Page JS goes HERE -->
 {% block javascripts %}
 <script>
-  document.getElementById('funcampCheckbox').addEventListener('change', function() {
+  // Set Unicamp as the default selection
+  document.getElementById('funcampSelect').value = '1';
+  var funcamppass = false;
+  document.getElementById('funcampSelect').addEventListener('change', function() {
     var matriculaInput = document.getElementById('matricula');
-    if (this.checked) {
-      matriculaInput.value = parseInt(matriculaInput.value || 0) + 2000000; // Garantir que o valor seja numérico antes de adicionar 2000000
-      matriculaInput.setAttribute('readonly', true); // Tornar o campo somente leitura em vez de desabilitado
-    } else {
-      if(matriculaInput.value) {
-        matriculaInput.value = parseInt(matriculaInput.value) - 2000000; // Subtrair 2000000 apenas se o valor for numérico e não vazio
+    
+    if (this.options[this.selectedIndex].text === 'Funcamp') { // Only execute when Funcamp is selected
+      matriculaInput.value = parseInt(matriculaInput.value || 0) + 2000000;
+      matriculaInput.setAttribute('readonly', true);
+      funcamppass = true;
+    } else if (funcamppass) {
+      if (matriculaInput.value) {
+        matriculaInput.value = parseInt(matriculaInput.value) - 2000000;
+        funcamppass = false;
       }
-      matriculaInput.removeAttribute('readonly'); // Remover o atributo somente leitura para permitir edição novamente
+      matriculaInput.removeAttribute('readonly');
     }
-  });
-  
+  });  
 </script>
 {% endblock javascripts %}
