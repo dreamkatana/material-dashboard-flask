@@ -77,14 +77,14 @@ def attend(unique_link):
     messages = {}  # Initialize an empty message
 
     if request.method == 'POST':
-        matricula = request.form['matricula']
+        cpf = request.form['cpf']
         email = request.form['email']  # Assuming you want to capture the email
         secret = request.form['secret']
         tipo = request.form['funcampSelect']
         if tipo is None or tipo == '':
             tipo = 1
         if secret == course.secret_code:
-            attendance = Attendance(course_code=course.course_code, course_class=course.course_class, emp=tipo, matricula=matricula, email=email)
+            attendance = Attendance(course_code=course.course_code, course_class=course.course_class, emp=tipo, matricula=cpf, email=email)
             db.session.add(attendance)
             db.session.commit()
             messages['success'] = 'Registro feito com sucesso!'
@@ -100,7 +100,7 @@ def attend(unique_link):
             c.drawString(100, 750, f"Confirmação de Presença para {request.form['course_name']}")
             c.drawString(100, 735, f"Data e Hora: {hora_atual}")
             c.drawString(100, 720, f"Email do Estudante: {request.form['email']}")
-            c.drawString(100, 705, f"Matrícula: {request.form['matricula']}")
+            c.drawString(100, 705, f"CPF: {request.form['cpf']}")
             c.drawString(100, 690, f"Link Único: {unique_link}")
             c.save()
 

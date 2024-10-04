@@ -45,8 +45,10 @@
                 <input type="email" class="form-control" id="email" name="email" required>
               </div>
               <div class="mb-3">
-                <label for="matricula" class="form-label">Matricula:</label>
-                <input type="number" class="form-control" id="matricula" name="matricula" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                <label for="cpf" class="form-label">CPF:</label>
+                <input type="text" class="form-control" id="cpf" name="cpf" maxlength="11" required>
+                <span id="cpf-error" style="color: red; display: none;">CPF inválido. Por favor, insira um CPF válido.</span>
+
               </div>
               <div class="mb-3">
                 <label for="funcampSelect" class="form-label">Tipo:</label>
@@ -87,6 +89,35 @@
 <!-- Specific Page JS goes HERE -->
 {% block javascripts %}
 <script>
+ // Função para validar CPF
+  function validarCPF(cpf) {
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+    soma = 0;
+    for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+    return true;
+  }
+
+  // Evento onsubmit para validar CPF antes de enviar o formulário
+  document.querySelector('form').onsubmit = function(event) {
+    const cpfInput = document.getElementById('cpf');
+    const cpfError = document.getElementById('cpf-error');
+    if (!validarCPF(cpfInput.value)) {
+      cpfError.style.display = 'block';
+      event.preventDefault();
+    } else {
+      cpfError.style.display = 'none';
+    }
+  };
+
   // Set Unicamp as the default selection
   document.getElementById('funcampSelect').value = '1';
   var funcamppass = false;
@@ -105,5 +136,7 @@
       matriculaInput.removeAttribute('readonly');
     }
   });  
+
+
 </script>
 {% endblock javascripts %}
